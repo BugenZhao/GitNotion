@@ -1,5 +1,5 @@
 # GitNotion
-A simple way to manage your Notion pages with Git. For example, back up your notes or deployment them on GitHub Pages.
+A simple way to manage your Notion pages with Git. For example, back up your notes or deploy them on GitHub Pages.
 
 ## Usage
 1. Run `pip3 install -r requirements.txt` in Terminal.

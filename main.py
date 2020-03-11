@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 import requests
 from notion.client import NotionClient
 from config import *
@@ -79,7 +80,7 @@ with zipfile.ZipFile('exported.zip', 'r') as zfp:
     zfp.extractall('exported')
 
 if TYPE == 'markdown':
-    shutil.move(f'exported/{PAGE}.md', f'{LOCAL}/README.md')
+    shutil.copy(f'exported/{PAGE}.md', f'{LOCAL}/README.md')
 
 if not os.path.isdir(LOCAL):
     print('Cloning...')
@@ -130,3 +131,5 @@ repo.remote().push()
 print('Cleaning...')
 shutil.rmtree('exported')
 os.remove('exported.zip')
+
+print('Done.')

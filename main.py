@@ -5,9 +5,11 @@ import os
 import time
 import zipfile
 import shutil
+import git
 
-if HTTPS_PROXY:
-    os.environ['https_proxy'] = HTTPS_PROXY
+if PROXY:
+    os.environ['http_proxy'] = PROXY
+    os.environ['https_proxy'] = PROXY
 
 client = NotionClient(TOKEN)
 page = client.search_blocks(PAGE)[0]
@@ -81,7 +83,9 @@ if TYPE == 'markdown':
 
 if not os.path.isdir(LOCAL):
     print('Cloning...')
-    os.system(f'git clone {REMOTE} {LOCAL}')
+    git.Repo.clone_from(url=REMOTE, to_path=LOCAL)
+
+repo = git.Repo(LOCAL)
 
 for name in os.listdir(LOCAL):
     if name == '.git' or name in PRESERVED:
@@ -108,11 +112,20 @@ for src_dir, dirs, files in os.walk('exported'):
             os.remove(dst_file)
         shutil.move(src_file, dst_dir)
 
-print('Committing and pushing...')
-os.system(f'cd {LOCAL} && '
-          f'git add -A && '
-          f'git commit -m "{time.strftime("%Y-%m-%d %H:%M:%S")}"; '
-          f'git push')
+message = input('Type your commit message: ')
+
+print('Committing...')
+try:
+    repo.git.add(A=True)
+    if message == '':
+        repo.git.commit('-m', f'{time.strftime("%Y-%m-%d %H:%M:%S")}')
+    else:
+        repo.git.commit('-m', f'{time.strftime("%Y-%m-%d %H:%M:%S")} - {message}')
+except git.exc.GitCommandError:
+    print('Nothing to commit')
+
+print('Pushing...')
+repo.remote().push()
 
 print('Cleaning...')
 shutil.rmtree('exported')

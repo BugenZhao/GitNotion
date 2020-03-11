@@ -115,6 +115,8 @@ for src_dir, dirs, files in os.walk('exported'):
 
 message = input('Type your commit message: ')
 
+push = False
+
 print('Committing...')
 try:
     repo.git.add(A=True)
@@ -122,11 +124,13 @@ try:
         repo.git.commit('-m', f'{time.strftime("%Y-%m-%d %H:%M:%S")}')
     else:
         repo.git.commit('-m', f'{time.strftime("%Y-%m-%d %H:%M:%S")} - {message}')
+    push = True
 except git.exc.GitCommandError:
     print('Nothing to commit')
 
-print('Pushing...')
-repo.remote().push()
+if push:
+    print('Pushing...')
+    repo.remote().push()
 
 print('Cleaning...')
 shutil.rmtree('exported')

@@ -132,9 +132,8 @@ def commit_push():
     except git.exc.GitCommandError:
         print('Nothing to commit')
 
-    if push:
-        print('Pushing...')
-        repo.remote().push()
+    print('Pushing...')
+    repo.remote().push()
 
 
 def clean():
